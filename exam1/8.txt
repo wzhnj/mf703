@@ -1,0 +1,73 @@
+1.
+class Foo {
+ public:
+	 Foo() {
+		 std::cout << " calling Foo constructor " << std::endl;
+	}
+	~Foo() {
+		 std::cout << " calling Foo destructor" << std::endl;
+	}
+	virtual void func1() {
+		std::cout << " calling Foo func1" << std::endl;
+	}
+	static void func2() {
+		std::cout << " calling Foo func2" << std::endl;
+	}
+};
+
+
+2.
+class FooKid : public Foo {
+public:
+	FooKid():Foo() {
+		std::cout << " calling FooKid constructor " << std::endl;
+	}
+	~FooKid() {
+		std::cout << " calling FooKid destructor" << std::endl;
+	}
+	virtual void func1() {
+		std::cout << " calling FooKid func1" << std::endl;
+	}
+	static void func2() {
+		std::cout << " calling FooKid func2" << std::endl;
+	}
+};
+
+
+3.
+<
+>
+==
+>=
+<=
+!=
+bool operator==(const Foo & rhs) const{
+return 
+}
+
+4.
+ calling Foo constructor (create foo1 with foo)
+ calling Foo constructor (create foo2 need foo first)
+ calling FooKid constructor (create foo2 need FooKid)
+ calling Foo func1	(call foo1 to use foo's func1)
+ calling Foo func2	(call foo1 to use foo's func2)
+ calling FooKid func1 (call foo2 to use fookid's func1)
+ calling FooKid func2 (call foo2 to use fookid's func2)
+ calling Foo constructor (create foo3, first use the Foo constructor)
+ calling FooKid constructor (create foo3, next use the FooKid constructor)
+ calling FooKid func1 (foo3 use fookid func1 since func1 is virtural)
+ calling Foo func2 (foo3 use foo func2 since it is static)
+ calling Foo constructor (foo4 created by fookid default constructor)
+ calling FooKid constructor(foo5 then created by foo with parameter foo4, a fookid)
+ calling FooKid func1 	(foo4 use fookid func1)
+ calling FooKid func2	(foo4 use fookid func2)
+ calling Foo func1		(foo5 use foo func1)
+ calling Foo func2		(foo5 use foo func2)
+ calling Foo destructor	(foo5)
+ calling FooKid destructor	(foo4)
+ calling Foo destructor	(foo3)
+ calling FooKid destructor	(foo3)
+ calling Foo destructor	(foo2)
+ calling FooKid destructor	(foo2)
+ calling Foo destructor	(foo1)
+ calling Foo destructor	(foo1)

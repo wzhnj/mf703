@@ -1,0 +1,129 @@
+http://sqlfiddle.com/#!9/a7782e/9
+
+-- borrowed from https://stackoverflow.com/q/7745609/808921
+
+CREATE TABLE info (
+  `instrument_id` int,
+  `ticker` char(5),
+  `sector_id` int,
+  `shares_outstanding` numeric,
+  PRIMARY KEY (`instrument_id`)
+) ;
+INSERT INTO info (`instrument_id`, `ticker`, `sector_id`, `shares_outstanding`) VALUES
+  (1, 'APPL', 11, 10000),
+  (2, 'V', 11, 30000),
+  (3, 'GSX', 22, 20000),
+  (4, 'XPEV', 22, 40000);
+  
+  CREATE TABLE prices (
+  `instrument_id` int,
+  `ticker` char(5),
+  `quote_date` datetime,
+  `close` numeric,
+   `open` numeric,
+    `low` numeric,
+    `daily_return` numeric
+  
+);
+INSERT INTO prices (`instrument_id`, `ticker`,`quote_date`, `close` ,`open`, `low`,`daily_return`) VALUES
+  (1, 'APPL','2000-01-01 10:10:10',123,34,45,1),
+  (1, 'APPL','2000-01-02 10:10:10',234,34,45,2),
+  (2, 'V','2000-01-01 10:10:10',345,34,45,3),
+  (2, 'V','2000-01-02 10:10:10',456,34,45,4),
+  (3, 'GSX','2000-01-01 10:10:10',123,34,45,5),
+  (3, 'GSX','2000-01-02 10:10:10',234,34,45,6),
+  (4, 'XPEV','2000-01-01 10:10:10',345,34,45,7),
+  (4, 'XPEV','2000-01-02 10:10:10',456,34,45,8);
+
+ср╠ъ
+-- based on answer https://stackoverflow.com/a/7745635/808921
+
+SELECT ticker, close 
+FROM prices
+WHERE ticker="V"
+ORDER BY quote_date DESC;
+
+
+SELECT T.shares_outstanding FROM(
+SELECT info.ticker, shares_outstanding, quote_date, close
+FROM  info  JOIN prices ON prices.ticker=info.ticker
+WHERE info.ticker= "GSX" AND quote_date="2000-01-01 10:10:10"
+)as T;
+
+SELECT sector_id, AVG(daily_return)from(
+SELECT info.sector_id, prices.quote_date, prices.daily_return
+from info JOIN prices on info.ticker=prices.ticker
+where prices.quote_date='2000-01-01 10:10:10'
+) as T GROUP BY sector_id
+
+
+
+
+
+-- based on answer https://stackoverflow.com/a/7745635/808921
+
+SELECT ticker, close 
+FROM prices
+WHERE ticker="V"
+ORDER BY quote_date DESC;
+
+
+SELECT T.shares_outstanding FROM(
+SELECT info.ticker, shares_outstanding, quote_date, close
+FROM  info  JOIN prices ON prices.ticker=info.ticker
+WHERE info.ticker= "GSX" AND quote_date="2000-01-01 10:10:10"
+)as T;
+
+SELECT sector_id, AVG(daily_return)from(
+SELECT info.sector_id, prices.quote_date, prices.daily_return
+from info JOIN prices on info.ticker=prices.ticker
+where prices.quote_date='2000-01-01 10:10:10'
+) as T GROUP BY sector_id;
+
+SELECT close 
+FROM prices
+WHERE ticker='APPL' AND quote_date>='2000-01-02 10:10:10' AND quote_date<='2000-01-02 10:10:10'; 
+
+SELECT close, info.instrument_id, shares_outstanding, quote_date
+FROM info
+LEFT JOIN prices ON info.instrument_id=prices.instrument_id;
+
+SELECT coalesce(close,0) as close, shares_outstanding, instrument_id,quote_date FROM(
+SELECT close, info.instrument_id, shares_outstanding, quote_date
+FROM info
+LEFT JOIN prices ON info.instrument_id=prices.instrument_id
+GROUP BY info.instrument_id)as T;
+
+
+SELECT close, info.instrument_id, shares_outstanding, quote_date
+FROM info
+LEFT JOIN prices ON info.instrument_id=prices.instrument_id;
+
+
+
+
+
+
+SELECT  instrument_info.instrument_id,ticker,coalesce(close,0.0) as close, shares_outstanding 
+FROM
+(SELECT T.instrument_id, T.created_at, prices.close FROM(
+SELECT instrument_id, MAX(quote_date) AS created_at 
+FROM instrument_prices
+GROUP BY 
+instrument_id)AS T
+JOIN instrument_prices
+ON T.created_at=prices.quote_date AND T.instrument_id=prices.instrument_id)as TT
+RIGHT JOIN instrument_info ON instrument_info.instrument_id=TT.instrument_id;
+
+
+
+
+
+
+
+
+
+
+
+
+

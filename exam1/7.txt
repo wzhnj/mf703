@@ -1,0 +1,105 @@
+1. argv is the input variable array
+atof(argv[1])
+
+2.
+calling default constructor   (create the object f)
+5			(print the bar in f which is 5)
+ calling copy constructor	(copy f to f1 use the overload initializor)
+5			(print f1's bar which is the same as 5 since it is a copy)
+5			(print the f's bar which is not changed)
+10			(print the f1's bar which is changed by the modification)
+ calling constructor with bar	(create the object f2)
+5			(f2 is created with bar=5, the value is 5)
+5			(bar=f2.bar, so print 5)
+5			(f2.bar as x should be changed to f2.bar which is the same, so print 5 )
+5			(bar2 is always f2.bar which is 5)
+calling constructor with bar  	(create a f3 with the makeFoo, the makeFoo use the original constructor)
+5			(the f3.bar is 5)
+
+
+modified code since the original code cause error
+class Foo {
+ public:
+	 Foo() {
+		 std::cout << " calling default constructor " << std::endl;
+		
+	}
+	
+		 Foo(int bar_) {
+		 bar = bar_;
+		 std::cout << " calling constructor with bar" << std::endl;
+		
+	}
+	
+		 Foo(const Foo& other) {
+		 this -> bar = other.bar;
+		 std::cout << " calling copy constructor " << std::endl;
+		
+	}
+	
+		 int getBarValue(int x) {
+			x = bar;
+			return (bar);
+			
+	}
+	
+		 int getBarRef(int& x) {
+			 x = bar;
+			 return (bar);
+			
+	}
+	
+		 static Foo makeFoo(int bar) { 
+			 return Foo(bar); 
+		 }
+	
+		 int bar;
+	
+};
+
+ int main(int argc, const char* argv[]) {
+	 Foo f;
+	 f.bar = 5;
+	 std::cout << f.bar << std::endl;
+	
+		 Foo f1(f);
+	 std::cout << f1.bar << std::endl;
+	 f1.bar = 10;
+	  std::cout << f.bar << std::endl;
+	  std::cout << f1.bar << std::endl;
+	 
+		  Foo f2(f.bar);
+	 int bar = f2.getBarValue(f.bar * 5);
+	  std::cout << f2.bar << std::endl;
+	 std::cout << bar << std::endl;
+	 
+	int  bar2 = f2.getBarRef(f2.bar);
+	  std::cout << f2.bar << std::endl;
+	  std::cout << bar2 << std::endl;
+	
+	  Foo f3 = Foo::makeFoo(f2.bar);
+	  std::cout << f3.bar << std::endl;
+
+		  return 0;
+	 
+ }
+
+3.  Add 
+private:       in front of the        int bar;     at line 29
+
+4.
+Foo operator=(const Foo other) {
+			 bar = other.bar;
+		}
+
+5. 
+ calling default constructor   (create f using default constructor by calling Foo f)
+ calling copy constructor	(create f1 with assignment function, which use copy constructor)
+ calling constructor with bar  (create f2 with 50 as parameter)
+ calling copy constructor	(use assignment as the second line f3=f2)
+ calling copy constructor	(use f2=f)
+ calling constructor with bar	(use f2=f and it use the constructor with bar)
+
+fPtr = new Foo(1)
+will not change since there is no parameter in the fCond(), so there is no such constructor.
+
